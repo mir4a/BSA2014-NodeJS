@@ -1,0 +1,52 @@
+.film-id{
+	width: 30px;
+	display: block;
+	float: left;
+}
+
+.film-name{
+	width: 400px;
+	display: block;
+	float: left;
+    position: relative;
+    word-wrap: break-word;
+}
+.film-name:hover{
+    background: #ffc1c5;
+}
+.film-name:hover:after{
+    content: 'click to edit';
+    font: italic 11px sans-serif;
+    color: orangered;
+    display: inline-block;
+    background: rgba(255, 193, 197, 0.90);
+    position: absolute;
+    right: 10px;
+    top: 4px;
+    z-index: 1;
+}
+.film-name:focus{
+    outline: 1px dashed orangered;
+}
+.film-name:focus:after{
+    content: none;
+}
+.film-name:focus:hover{
+    background: none;
+}
+
+.film-year{
+	width: 100px;
+	display: block;
+	float: left;
+}
+
+.film-container{
+	clear: both;
+}
+.film-container:after {
+    content: '';
+    display: table;
+    clear: both;
+    float: none;
+}
