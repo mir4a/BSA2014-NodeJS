@@ -42,11 +42,17 @@ app.delete('/restapi/country', function (req, res) {
 	res.end();
 });
 
-app.put('/api/films/:id', function (req, res) {
-  var film = hotelService.getFilmList(req.params.id);
-  hotelService.changeFilm(req.body);
-  res.status(200);
-  res.send(JSON.stringify(film));
+app.delete('/restapi/country/:name', function (req, res) {
+  console.log(req.body);
+	hotelService.deleteHotel(req.body);
+  res.redirect('/restapi/country');
+	res.end();
+});
+
+app.put('/restapi/country', function (req, res) {
+  console.log(req.body);
+  hotelService.updateHotel(req.body);
+  res.redirect('/restapi/country');
 	res.end();
 });
 

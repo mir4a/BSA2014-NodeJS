@@ -33,6 +33,27 @@ var HotelService = function(){
     this.CountryList = _.reject(this.CountryList, function(item){return item.id === Number(id);});
   };
 
+  this.updateHotel = function(param) {
+    var country = _.findWhere(this.CountryList, {name: param.country.name}),
+        _hotel = _.findWhere(country.hotels, {id: Number(param.hotel.id)});
+    _hotel.name = param.hotel.name;
+  };
+
+
+  this.deleteHotel = function(param) {
+    var country = _.findWhere(this.CountryList, {name: param.country.name});
+        country.hotels = _.reject(country.hotels, function(item){return item.id === Number(param.hotel.id)});
+  };
+
+  this.addHotel = function(param) {
+    var country = _.findWhere(this.CountryList, {name: param.country.name}),
+        _hotel = {name: param.hotel.name},
+        ids = _.pluck(country.hotels, 'id');
+    _hotel['id'] = _.max(ids) + 1;
+    _hotel.name = param.hotel.name;
+    country.hotels.push(country);
+  };
+
   this.addCountry = function(name){
     var country = {name: name};
     var ids = _.pluck(this.CountryList, 'id');

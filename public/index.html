@@ -1,30 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<title>Node http express</title>
-	<link rel="stylesheet" href="styles/style.css">
+    <meta charset="UTF-8">
+    <title>Node http express</title>
+    <link rel="stylesheet" href="styles/style.css">
 </head>
 <body>
 <h1>Add new country</h1>
 
 <form action="/restapi/country" method="post">
-    <input type="text" name="country[name]" placeholder="Name of country" />
+    <input type="text" name="country[name]" placeholder="Name of country"/>
     <input type="submit" value="Submit"/>
 </form>
 
 <hr/>
 
-<h2>Delete country</h2>
+<h2>Update hotel info</h2>
+
+<form action="/restapi/country" method="post" id="update_hotel">
+    <input name="_method" type="hidden" value="put"/>
+    <select name="country[name]" id="country_name">
+        <option selected disabled>Choose country</option>
+        <option value="Australia">Australia</option>
+        <option value="New Zealand">New Zealand</option>
+        <option value="Sri Lanka">Sri Lanka</option>
+    </select>
+
+    <select id="hotels" name="hotel[id]" style="display: none"></select>
+
+    <div class="hotel_info"></div>
+
+    <input type="submit" value="Submit" disabled="disabled"/>
+</form>
+
+<hr/>
+
+<h3>Delete country</h3>
 
 <form action="/restapi/country" method="post">
-    <input type="hidden" name="_method" value="delete" />
+    <input type="hidden" name="_method" value="delete"/>
     <select name="country[id]">
         <option value="1">Australia</option>
         <option value="2">New Zealand</option>
         <option value="3">Sri Lanka</option>
     </select>
-    <input type="submit" value="Submit" />
+    <input type="submit" value="Submit"/>
 </form>
+
+<hr/>
+
+<h2>Add hotel in Australia</h2>
+
+<form action="/restapi/country/Australia" method="post">
+    <input name="_method" type="hidden" value="delete"/>
+    <select name="hotel[id]">
+        <option value="1">Ritz</option>
+        <option value="2">Carlton</option>
+    </select>
+    <input type="submit" value="Submit"/>
+</form>
+
+<hr/>
+<script src="js/jquery-2.1.0.min/index.js"></script>
+<script>
+    //Some inline hardcore scripting
+    var form = $('#update_hotel'), select = form.find('#country_name'), hotels_select = form.find('#hotels');
+
+    var countries = $.get('/restapi/country');
+    countries.done(function (data) {
+        select.html('<option selected disabled>Select country</option>');
+        $(data).each(function (i, obj) {
+            select.append('<option value="' + obj['name'] + '">' + obj['name'] + '</option>');
+        });
+    });
+
+    select.on('change', function () {
+        getHotels($(this).val());
+    });
+
+    function getHotels(name) {
+        var hotels = $.get('/restapi/country/' + name, {hotel: 'all'});
+        hotels.done(function (data) {
+            var opt = '<option selected default>Select hotel</option>';
+            $(data.hotels).each(function (i, obj) {
+                opt += '<option value="' + obj['id'] + '">' + obj['name'] + '</option>';
+            });
+            hotels_select.html(opt).show();
+        });
+    }
+
+    hotels_select.on('change', function () {
+        setHotelName({id: $(this).val(), body: $(this)});
+    });
+
+    function setHotelName(data) {
+        console.info(data);
+        var info = $('.hotel_info'), hotel_name = $('<input name="hotel[name]">'), delBtn = $('<button>Delete</button>') ;
+        hotel_name.attr('placeholder', 'set name').val($(data.body).find(":selected").text());
+
+        info.html(hotel_name).append(delBtn);
+
+        hotel_name.on('keyup', function(){
+            form.find('input[type="submit"]').attr('disabled', false);
+        });
+
+        delBtn.on('click', function(e){
+            var country = form.find('#country_name').val();
+            form.find('input[name="_method"]').val('delete');
+            $.post('/restapi/country/' + country, form.serialize());
+        });
+
+    }
+    console.log(form);
+
+
+</script>
 </body>
 </html>
