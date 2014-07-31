@@ -1,65 +1,69 @@
 var express = require('express'),
 	app = express(),
   bodyParser = require('body-parser'),
-	filmService = require('./filmService');
+	hotelService = require('./hotelService'),
+  connect = require('connect'),
+  methodOverride = require('method-override');
 
 app.use(express.static(__dirname + '/public'));
-app.use(bodyParser.json());
+app.use(bodyParser.urlencoded());
+app.use(methodOverride(function(req, res){
+  if (req.body && typeof req.body === 'object' && '_method' in req.body) {
+    // look in urlencoded POST bodies and delete it
+    var method = req.body._method;
+    delete req.body._method;
+    return method
+  }
+}));
 
-app.get('/api/films', function (req, res) {
-	res.send(filmService.getFilmList());
+app.get('/restapi/country', function (req, res) {
+	res.send(hotelService.getCountryData());
 });
 
-app.get('/api/films/:id', function (req, res) {
-	var film = filmService.getFilmList(req.params.id);
-	if (film){
-		res.send(film);
+app.get('/restapi/country/:name', function (req, res) {
+	var data = hotelService.getCountryData(req.params.name, req.query);
+	if (data){
+		res.send(data);
 	} else {
-		res.send('No film with id ' + req.params.id);
+		res.send('No country were found with name: ' + req.params.name);
 	}
 });
 
-app.delete('/api/films/:id', function (req, res) {
-	var film = filmService.getFilmList(req.params.id);
-	filmService.deleteFilm(req.params.id);
-  res.status(200);
-  res.send(JSON.stringify(film));
+app.post('/restapi/country', function (req, res) {
+  hotelService.addCountry(req.body.country.name);
+  res.redirect('/restapi/country');
+	res.end();
+});
+
+app.delete('/restapi/country', function (req, res) {
+  console.log(req.body);
+	hotelService.deleteCountry(req.body.country.id);
+  res.redirect('/restapi/country');
 	res.end();
 });
 
 app.put('/api/films/:id', function (req, res) {
-  var film = filmService.getFilmList(req.params.id);
-  filmService.changeFilm(req.body);
+  var film = hotelService.getFilmList(req.params.id);
+  hotelService.changeFilm(req.body);
   res.status(200);
   res.send(JSON.stringify(film));
 	res.end();
 });
 
-app.post('/api/films', function (req, res) {
-  var film = filmService.getFilmList(req.params.id);
-  filmService.addFilm(req.body);
-  res.status(200);
-  res.send(JSON.stringify(film));
-	res.end();
-});
 
-app.get('/api/filmdetails', function (req, res) {
-	res.send(filmService.getFilm(req.query.name));
-});
-
-app.get('/', function(req, res){
+app.get('/help', function(req, res){
 	var text = [
-		'<b>localhost:3000/api/films</b>',
-		'returns the list of films available',
+		'<hr>',
+		'<b>localhost:3000/restapi/country</b>',
+		'returns the list of available countries',
 		'<br />',
-		'<b>localhost:3000/api/films/%id%</b>',
-		'where %id% is id of the film from the list',
+		'<b>localhost:3000/restapi/country/%name%</b>',
+		'where %name% is name of the country from the list',
 		'<br />',
-		'<b>localhost:3000/api/filmdetails?name=%filmname%</b>',
-		'where <b>%filmname%</b> is a name of the film from the filmlist',
+		'<b>localhost:3000/restapi/country/%name%/%id%</b>',
+		'where <b>%id%</b> is a id of the hotel in <b>%name%</b> country',
 		'<br />',
-		'<b>localhost:3000/app</b>',
-		'this is the root of your web app'];
+		'<hr>'];
 	res.send(text.join('<br />'));
 
 });

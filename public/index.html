@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Node http express</title>
+	<link rel="stylesheet" href="styles/style.css">
+</head>
+<body>
+<h1>Add new country</h1>
+
+<form action="/restapi/country" method="post">
+    <input type="text" name="country[name]" placeholder="Name of country" />
+    <input type="submit" value="Submit"/>
+</form>
+
+<hr/>
+
+<h2>Delete country</h2>
+
+<form action="/restapi/country" method="post">
+    <input type="hidden" name="_method" value="delete" />
+    <select name="country[id]">
+        <option value="1">Australia</option>
+        <option value="2">New Zealand</option>
+        <option value="3">Sri Lanka</option>
+    </select>
+    <input type="submit" value="Submit" />
+</form>
+</body>
+</html>
