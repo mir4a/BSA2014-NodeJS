@@ -1,0 +1,23 @@
+{
+  "name": "BSA2014-http-express",
+  "version": "0.0.0",
+  "authors": [
+    "Miroslav Martynov <marty.mircha@gmail.com>"
+  ],
+  "main": "app.js",
+  "moduleType": [
+    "node"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery-2.1.0.min": "http://code.jquery.com/jquery-2.1.0.min.js"
+  }
+}
