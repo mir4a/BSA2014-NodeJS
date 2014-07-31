@@ -16,10 +16,16 @@ app.use(methodOverride(function(req, res){
   }
 }));
 
+/**
+ * Get all countries
+ */
 app.get('/restapi/country', function (req, res) {
 	res.send(hotelService.getCountryData());
 });
 
+/**
+ * Get particular country
+ */
 app.get('/restapi/country/:name', function (req, res) {
 	var data = hotelService.getCountryData(req.params.name, req.query);
 	if (data){
@@ -29,12 +35,18 @@ app.get('/restapi/country/:name', function (req, res) {
 	}
 });
 
+/**
+ * Add new country
+ */
 app.post('/restapi/country', function (req, res) {
   hotelService.addCountry(req.body.country.name);
   res.redirect('/restapi/country');
 	res.end();
 });
 
+/**
+ * Delete particular country
+ */
 app.delete('/restapi/country', function (req, res) {
   console.log(req.body);
 	hotelService.deleteCountry(req.body.country.id);
@@ -42,6 +54,9 @@ app.delete('/restapi/country', function (req, res) {
 	res.end();
 });
 
+/**
+ * Delete particular hotel in :name country
+ */
 app.delete('/restapi/country/:name', function (req, res) {
   console.log(req.body);
 	hotelService.deleteHotel(req.body);
@@ -49,6 +64,9 @@ app.delete('/restapi/country/:name', function (req, res) {
 	res.end();
 });
 
+/**
+ * Update hotel in particular country
+ */
 app.put('/restapi/country', function (req, res) {
   console.log(req.body);
   hotelService.updateHotel(req.body);
@@ -56,7 +74,9 @@ app.put('/restapi/country', function (req, res) {
 	res.end();
 });
 
-
+/**
+ * Help page
+ */
 app.get('/help', function(req, res){
 	var text = [
 		'<hr>',
