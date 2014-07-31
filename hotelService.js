@@ -46,12 +46,11 @@ var HotelService = function(){
   };
 
   this.addHotel = function(param) {
-    var country = _.findWhere(this.CountryList, {name: param.country.name}),
-        _hotel = {name: param.hotel.name},
+    var country = _.findWhere(this.CountryList, {name: param.country}),
+        _hotel = {name: param.hotel},
         ids = _.pluck(country.hotels, 'id');
     _hotel['id'] = _.max(ids) + 1;
-    _hotel.name = param.hotel.name;
-    country.hotels.push(country);
+    country.hotels.push(_hotel);
   };
 
   this.addCountry = function(name){

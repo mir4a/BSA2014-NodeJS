@@ -52,11 +52,7 @@
 <h2>Add hotel in Australia</h2>
 
 <form action="/restapi/country/Australia" method="post">
-    <input name="_method" type="hidden" value="delete"/>
-    <select name="hotel[id]">
-        <option value="1">Ritz</option>
-        <option value="2">Carlton</option>
-    </select>
+    <input type="text" name="hotel[name]" placeholder="name of new hotel" />
     <input type="submit" value="Submit"/>
 </form>
 

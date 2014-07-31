@@ -65,6 +65,17 @@ app.delete('/restapi/country/:name', function (req, res) {
 });
 
 /**
+ * Add new hotel in :name country
+ */
+app.post('/restapi/country/:name', function (req, res) {
+  console.log(req.params);
+  console.log(req.body);
+	hotelService.addHotel({country: req.params.name,hotel: req.body.hotel.name});
+  res.redirect('/restapi/country');
+	res.end();
+});
+
+/**
  * Update hotel in particular country
  */
 app.put('/restapi/country', function (req, res) {
