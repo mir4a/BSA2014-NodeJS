@@ -65,7 +65,8 @@
     var countries = $.get('/restapi/country');
     countries.done(function (data) {
         select.html('<option selected disabled>Select country</option>');
-        $(data).each(function (i, obj) {
+        var json = JSON.parse(data);
+        $(json).each(function (i, obj) {
             select.append('<option value="' + obj['name'] + '">' + obj['name'] + '</option>');
         });
     });
@@ -78,7 +79,8 @@
         var hotels = $.get('/restapi/country/' + name, {hotel: 'all'});
         hotels.done(function (data) {
             var opt = '<option selected default>Select hotel</option>';
-            $(data.hotels).each(function (i, obj) {
+            var json = JSON.parse(data);
+            $(json.hotels).each(function (i, obj) {
                 opt += '<option value="' + obj['id'] + '">' + obj['name'] + '</option>';
             });
             hotels_select.html(opt).show();
