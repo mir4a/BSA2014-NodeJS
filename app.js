@@ -62,6 +62,9 @@ server.on('request', function(req,res) {
            */
           var fullBody = '';
 
+          console.log('req.query');
+          console.log(url_parts.query);
+
           req.on('data', function(chunk) {
             fullBody += chunk.toString();
           });
@@ -70,12 +73,15 @@ server.on('request', function(req,res) {
             console.log('======== decodedBody ========');
             console.log(decodedBody);
 
-            var data = hotelService.getCountryData(path_parts[3], {hotel: decodedBody['hotel']});
-
+            var data = hotelService.getCountryData(decodeURI(path_parts[3]), url_parts.query);
+            console.log('data');
+            console.log(data);
             if (data) {
-              res.send(data);
+              console.log(JSON.stringify(data));
+              res.writeHead(200, {'Content-Type': 'text/html'});
+              res.end(JSON.stringify(data));
             } else {
-              res.send('No country were found with name: ' + req.params.name);
+              console.log('No country were found with name: ' + decodeURI(path_parts[3]));
             }
           });
         }
@@ -138,25 +144,26 @@ server.on('request', function(req,res) {
 
     }
 
+  } else {
+    switch(url_parts.pathname) {
+      case '/' :
+      case '/index.html' :
+        res.writeHead(200, {'Content-Type': 'text/html'});
+        res.end(fs.readFileSync('public/index.html'));
+        break;
+      case '/js/jquery-2.1.0.min/index.js' :
+        res.writeHead(200, {'Content-Type': 'text/javascript'});
+        res.end(fs.readFileSync('public/js/jquery-2.1.0.min/index.js'));
+        break;
+      case '/styles/style.css' :
+        res.writeHead(200, {'Content-Type': 'text/css'});
+        res.end(fs.readFileSync('public/styles/style.css'));
+        break;
+      default:
+        res.writeHead(404, "Not found", {'Content-Type': 'text/html'});
+        res.end('<html><head><title>404 - Not found</title></head><body><h1>Not found.</h1></body></html>');
+        console.log("[404] " + req.method + " to " + req.url);
+    }
   }
 
-  switch(url_parts.pathname) {
-    case '/' :
-    case '/index.html' :
-      res.writeHead(200, {'Content-Type': 'text/html'});
-      res.end(fs.readFileSync('public/index.html'));
-      break;
-    case '/js/jquery-2.1.0.min/index.js' :
-      res.writeHead(200, {'Content-Type': 'text/javascript'});
-      res.end(fs.readFileSync('public/js/jquery-2.1.0.min/index.js'));
-      break;
-    case '/styles/style.css' :
-      res.writeHead(200, {'Content-Type': 'text/css'});
-      res.end(fs.readFileSync('public/styles/style.css'));
-      break;
-    default:
-      res.writeHead(404, "Not found", {'Content-Type': 'text/html'});
-      res.end('<html><head><title>404 - Not found</title></head><body><h1>Not found.</h1></body></html>');
-      console.log("[404] " + req.method + " to " + req.url);
-  }
 });
