@@ -5,33 +5,6 @@ var http = require('http'),
   util = require('util'),
   hotelService = require('./hotelService');
 
-
-
-
-//
-//
-///**
-// * Delete particular hotel in :name country
-// */
-//app.delete('/restapi/country/:name', function (req, res) {
-//  console.log(req.body);
-//  hotelService.deleteHotel(req.body);
-//  res.redirect('/restapi/country');
-//  res.end();
-//});
-//
-///**
-// * Add new hotel in :name country
-// */
-//app.post('/restapi/country/:name', function (req, res) {
-//  console.log(req.params);
-//  console.log(req.body);
-//  hotelService.addHotel({country: req.params.name, hotel: req.body.hotel.name});
-//  res.redirect('/restapi/country');
-//  res.end();
-//});
-
-
 var server = http.createServer().listen(8888, 'localhost');
 
 server.on('request', function(req,res) {
@@ -55,6 +28,28 @@ server.on('request', function(req,res) {
           req.on('end', function() {
             var decodedBody = querystring.parse(fullBody);
             console.log(decodedBody);
+            if (decodedBody['_method'] && decodedBody._method === 'delete') {
+              /**
+              * Delete particular hotel in :name country
+              */
+              console.log('Delete particular hotel in :name country');
+              console.log({country: {name: decodedBody['country[name]']}, hotel: {id: decodedBody['hotel[id]']}});
+                hotelService.deleteHotel({country: {name: decodedBody['country[name]']}, hotel: {id: decodedBody['hotel[id]']}});
+              res.statusCode = 302;
+              res.setHeader('Location', '/restapi/country/' + encodeURI(decodedBody['country[name]']));
+              res.end();
+            } else {
+
+              /**
+              * Add new hotel in :name country
+              */
+              console.log('Add new hotel in :name country');
+              console.log({country: path_parts[3], hotel: decodedBody['hotel[name]']});
+              hotelService.addHotel({country: path_parts[3], hotel: decodedBody['hotel[name]']});
+              res.statusCode = 302;
+              res.setHeader('Location', '/restapi/country/' + path_parts[3]);
+              res.end();
+            }
           });
         } else if (req.method == 'GET') {
           /**
@@ -105,7 +100,8 @@ server.on('request', function(req,res) {
                     name: decodedBody['country[name]']
                   },
                   hotel: {
-                    id: decodedBody['hotel[id]']
+                    id: decodedBody['hotel[id]'],
+                    name: decodedBody['hotel[name]']
                   }
                 };
                 hotelService.updateHotel(params);
