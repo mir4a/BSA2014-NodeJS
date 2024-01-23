@@ -1,9 +1,9 @@
 BSA2014-NodeJS
 ===============================
 
-##Hometask boilerplate for JS group after NodeJS lection.
+## Hometask boilerplate for JS group after NodeJS lection.
 
-###How to start the server
+### How to start the server
 - Install the [node.js](http://nodejs.org/)
 - Clone this repository
 - Go to folder
@@ -24,5 +24,5 @@ node app.js
 localhost:3000
 ```
 
-###What should be done?
+### What should be done?
 Add RESTful api using express and http modules
